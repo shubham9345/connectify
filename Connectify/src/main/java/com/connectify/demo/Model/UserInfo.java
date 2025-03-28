@@ -24,14 +24,14 @@ public class UserInfo {
     private String password;
     private String roles;
 
-    @OneToMany(mappedBy = "user", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.ALL} ,orphanRemoval = true)
     private List<Post> posts;
 
-    @OneToMany(mappedBy = "to")
+    @OneToMany(mappedBy = "to",cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Followers> followers;
 
-    @OneToMany(mappedBy = "from")
+    @OneToMany(mappedBy = "from" ,cascade = CascadeType.ALL , orphanRemoval = true)
     @JsonIgnore
     private List<Followers> following;
 }

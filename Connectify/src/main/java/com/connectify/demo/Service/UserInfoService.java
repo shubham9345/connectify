@@ -18,8 +18,7 @@ public class UserInfoService {
 
     public UserInfo AddUser(UserInfo user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        UserInfo savedUser = userInfoRepository.save(user);
-        return savedUser;
+        return userInfoRepository.save(user);
     }
 
     public UserInfo getUserbyId(Long Id) {
@@ -32,5 +31,22 @@ public class UserInfoService {
 
     public List<UserInfo> getAllUser() {
         return userInfoRepository.findAll();
+    }
+
+//    public String deleteUserById(Long userId){
+//        Optional<UserInfo> UserOptional = userInfoRepository.findById(userId);
+//        if (UserOptional.isEmpty()) {
+//            throw new RuntimeException("User not found with Id" + userId);
+//        }
+//        userInfoRepository.deleteById(userId);
+//        return "User is deleted Successfully with id - " +userId;
+//    }
+
+    public String deleteUserById(Long userId) {
+        UserInfo user = userInfoRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with Id: " + userId));
+
+        userInfoRepository.delete(user);
+        return "User deleted successfully with id: " + userId;
     }
 }

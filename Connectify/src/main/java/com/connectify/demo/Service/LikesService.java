@@ -49,9 +49,9 @@ public class LikesService {
 
     public String deleteLikesById(Long LikesId) {
         if (!likeRepository.existsById(LikesId)) {
-            throw new RuntimeException("comment is not found with id" + LikesId);
+            throw new RuntimeException("Likes is not found with id" + LikesId);
         }
         likeRepository.deleteById(LikesId);
-        return "comment is deleted with Id - " + LikesId;
+        return "Likes is deleted with Id - " + LikesId;
     }
 }

@@ -29,7 +29,7 @@ public class LikeController {
     }
 
     @DeleteMapping("/delete/{likesId}")
-    public ResponseEntity<String> deleteCommentById(@PathVariable Long likesId) {
+    public ResponseEntity<String> deleteLikesById(@PathVariable Long likesId) {
         String message = likeService.deleteLikesById(likesId);
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
