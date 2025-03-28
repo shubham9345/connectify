@@ -1,0 +1,27 @@
+{
+  "groups": [
+    {
+      "name": "cors",
+      "type": "com.connectify.demo.config.CORSProperties",
+      "sourceType": "com.connectify.demo.config.CORSProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "cors.allowed-headers",
+      "type": "java.lang.String[]",
+      "sourceType": "com.connectify.demo.config.CORSProperties"
+    },
+    {
+      "name": "cors.allowed-methods",
+      "type": "java.lang.String[]",
+      "sourceType": "com.connectify.demo.config.CORSProperties"
+    },
+    {
+      "name": "cors.allowed-origins",
+      "type": "java.lang.String[]",
+      "sourceType": "com.connectify.demo.config.CORSProperties"
+    }
+  ],
+  "hints": []
+}
