@@ -32,7 +32,11 @@ public class CommentService {
             throw new RuntimeException("User is not found with Id.");
         }
         Post post = postService.getPostById(postId);
-
+        post.setNoOfComments(post.getComments().size()+1);
+//        UserInfo userInfo = post.getUser();
+//        if(userInfo.getId()==userId){
+//            throw new RuntimeException("")
+//        }
         if (post == null) {
             throw new RuntimeException("post not found this id");
         }
@@ -63,6 +67,8 @@ public class CommentService {
     }
 
     public int removeCommentByUserId(Long userId, Long postId, Long commentId) {
+        Post post = postService.getPostById(postId);
+        post.setNoOfComments(post.getComments().size()-1);
         String jpql = "DELETE FROM Comment c WHERE c.user.id = :userId AND c.post.id = :postId AND c.commentId = :commentId";
         return entityManager.createQuery(jpql)
                 .setParameter("userId", userId)

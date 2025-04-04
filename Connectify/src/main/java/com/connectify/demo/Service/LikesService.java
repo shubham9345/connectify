@@ -33,6 +33,7 @@ public class LikesService {
             throw new RuntimeException("User is not found with Id.");
         }
         Post post = postService.getPostById(postId);
+        post.setNoOfLikes(post.getLikes().size()+1);
 
         if (post == null) {
             throw new RuntimeException("post not found this id");
@@ -63,6 +64,8 @@ public class LikesService {
     }
 
     public int removeLikeByUserId(Long userId, Long postId) {
+        Post post = postService.getPostById(postId);
+        post.setNoOfLikes(post.getLikes().size()-1);
         String jpql = "DELETE FROM Likes l WHERE l.user.id = :userId AND l.posts.id = :postId";
         return entityManager.createQuery(jpql)
                 .setParameter("userId", userId)

@@ -27,11 +27,13 @@ public class Post {
     private String postUrl;
     private String postDescription;
     private LocalDateTime time;
+    private int noOfComments;
+    private int noOfLikes;
     @ManyToOne
     @JoinColumn(name = "user_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
 
-    @JsonBackReference
+     @JsonIgnore
     private UserInfo user;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)

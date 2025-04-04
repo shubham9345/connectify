@@ -60,4 +60,9 @@ public class PostController {
         List<Post> allPost = postService.allPostByUserId(userId);
         return new ResponseEntity<>(allPost, HttpStatus.OK);
     }
+    @PatchMapping("/update-post/{postId}")
+    public ResponseEntity<?> updatePost(@RequestBody Post post, @PathVariable Long postId){
+        Post updatePost = postService.updatePost(post,postId);
+        return  new ResponseEntity<>(updatePost,HttpStatus.OK);
+    }
 }

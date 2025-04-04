@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import static Utility.ConstantUtil.INVALID_CREDENTIAL;
 
@@ -86,23 +85,30 @@ public class AuthController {
     }
 
     @GetMapping("/profile/{Id}")
-    public ResponseEntity<UserInfo> getUserById(@PathVariable Long Id){
-       UserInfo userInfo = userInfoService.getUserbyId(Id);
-       return new ResponseEntity<>(userInfo,HttpStatus.OK);
+    public ResponseEntity<UserInfo> getUserById(@PathVariable Long Id) {
+        UserInfo userInfo = userInfoService.getUserbyId(Id);
+        return new ResponseEntity<>(userInfo, HttpStatus.OK);
     }
 
     @GetMapping("/all-user")
-    public ResponseEntity<List<UserInfo>> allUser(){
+    public ResponseEntity<List<UserInfo>> allUser() {
         List<UserInfo> allUser = userInfoService.getAllUser();
-        if(allUser == null){
+        if (allUser == null) {
             throw new RuntimeException("no user is found");
         }
-        return new ResponseEntity<>(allUser,HttpStatus.OK);
+        return new ResponseEntity<>(allUser, HttpStatus.OK);
     }
-     @DeleteMapping("/delete/{userId}")
-    public ResponseEntity<String> deleteUserById(@PathVariable Long userId){
-       String mess = userInfoService.deleteUserById(userId);
-        return new ResponseEntity<>(mess,HttpStatus.OK);
-     }
+
+    @DeleteMapping("/delete/{userId}")
+    public ResponseEntity<String> deleteUserById(@PathVariable Long userId) {
+        String mess = userInfoService.deleteUserById(userId);
+        return new ResponseEntity<>(mess, HttpStatus.OK);
+    }
+
+    @PatchMapping("/update-user/{userId}")
+    public ResponseEntity<?> updateUserByUserId(@RequestBody UserInfo userInfo, @PathVariable Long userId) {
+        UserInfo updatedUser = userInfoService.updatedUser(userInfo, userId);
+        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+    }
 }
 

@@ -81,4 +81,18 @@ public class PostService {
         UserInfo user = userInfo.get();
         return user.getPosts();
     }
+    public Post updatePost (Post post, Long postId){
+        Post existingPost = getPostById(postId);
+        if(post.getTopic()!=null){
+            existingPost.setTopic(post.getTopic());
+        }
+        if(post.getPostDescription()!=null){
+            existingPost.setPostDescription(post.getPostDescription());
+        }
+        if(post.getPostUrl()!=null){
+            existingPost.setPostUrl(post.getPostUrl());
+        }
+        postRepository.save(existingPost);
+        return existingPost;
+    }
 }

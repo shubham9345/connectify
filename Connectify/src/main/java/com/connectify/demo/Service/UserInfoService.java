@@ -53,4 +53,33 @@ public class UserInfoService {
         userInfoRepository.delete(user);
         return "User deleted successfully with id: " + userId;
     }
+
+    public UserInfo updatedUser(UserInfo userInfo, Long userId) {
+        UserInfo existingUser = getUserbyId(userId);
+        if (existingUser == null) {
+            throw new RuntimeException("User is not found with Id - " + userId);
+        }
+        if (userInfo.getUserBio() != null) {
+            existingUser.setUserBio(userInfo.getUserBio());
+        }
+        if (userInfo.getName() != null) {
+            existingUser.setName(userInfo.getName());
+        }
+        if (userInfo.getEmail() != null) {
+            existingUser.setEmail(userInfo.getEmail());
+        }
+        if (userInfo.getPassword() != null) {
+            existingUser.setPassword(passwordEncoder.encode(userInfo.getPassword()));
+        }
+        if (userInfo.getUsername() != null) {
+            existingUser.setUsername(userInfo.getUsername());
+        }
+        if(userInfo.getUrl()!=null){
+            existingUser.setUrl(userInfo.getUrl());
+        }
+
+        userInfoRepository.save(existingUser);
+        return existingUser;
+
+    }
 }
