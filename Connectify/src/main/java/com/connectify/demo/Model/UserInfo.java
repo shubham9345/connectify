@@ -45,5 +45,7 @@ public class UserInfo {
     @OneToMany(mappedBy = "user" ,cascade = CascadeType.ALL , orphanRemoval = true)
     @JsonIgnore
     private List<Likes> likes;
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.ALL})
+    private List<Notification> notifications;
 
 }

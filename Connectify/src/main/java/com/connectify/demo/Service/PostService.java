@@ -2,8 +2,11 @@ package com.connectify.demo.Service;
 
 import com.connectify.demo.Exceptions.PostNotFoundException;
 import com.connectify.demo.Exceptions.UserNotFoundException;
+import com.connectify.demo.Model.Followers;
+import com.connectify.demo.Model.Notification;
 import com.connectify.demo.Model.Post;
 import com.connectify.demo.Model.UserInfo;
+import com.connectify.demo.Repository.NotificationRepository;
 import com.connectify.demo.Repository.PostRepository;
 import com.connectify.demo.Repository.UserInfoRepository;
 import jakarta.persistence.EntityManager;
@@ -13,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +28,8 @@ public class PostService {
     private PostRepository postRepository;
     @Autowired
     private UserInfoRepository userInfoRepository;
+    @Autowired
+    private NotificationRepository notificationRepository;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -38,6 +44,28 @@ public class PostService {
         user.setNoOfPost(user.getPosts().size() + 1);
         post.setUser(user);
         post.setTime(LocalDateTime.now());
+        List<Followers> followers = user.getFollowers();
+        for(int i = 0; i<followers.size(); i++){
+            List<Notification> notf  = followers.get(i).getFrom().getNotifications();
+            if(notf.isEmpty()){
+                List<Notification> notfi = new ArrayList<>();
+                Notification notification = new Notification();
+                notification.setMessage("post is uploaded by user " + user.getName());
+                notification.setUser(followers.get(i).getFrom());
+                notification.setTime(LocalDateTime.now());
+                notfi.add(notification);
+                followers.get(i).getFrom().setNotifications(notfi);
+            }else{
+                Notification notification = new Notification();
+                notification.setMessage("post is uploaded by user " + user.getName());
+                notification.setUser(followers.get(i).getFrom());
+                notification.setTime(LocalDateTime.now());
+                notf.add(notification);
+                followers.get(i).getFrom().setNotifications(notf);
+            }
+            userInfoRepository.save(followers.get(i).getFrom());
+        }
+
         return postRepository.save(post);
     }
 

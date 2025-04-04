@@ -24,6 +24,7 @@ public class Post {
     private Long postId;
     private String topic;
     private String postUrl;
+    @Column(name = "post_description", length = 8000)
     private String postDescription;
     private LocalDateTime time;
     private int noOfComments;
