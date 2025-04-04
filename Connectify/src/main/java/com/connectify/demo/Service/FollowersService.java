@@ -21,14 +21,14 @@ public class FollowersService {
 
     @Transactional
     public String followUser(Long fromUserId, Long toUserId) {
-        UserInfo  fromUser = userService.getUserbyId(fromUserId);
-        UserInfo  toUser = userService.getUserbyId(toUserId);
+        UserInfo fromUser = userService.getUserbyId(fromUserId);
+        UserInfo toUser = userService.getUserbyId(toUserId);
 
         if (followersRepository.existsByFromAndTo(fromUser, toUser)) {
             throw new RuntimeException("User is already following the target user.");
         }
-        fromUser.setNoOfFollowing(fromUser.getFollowing().size()+1);
-        toUser.setNoOfFollowers(toUser.getFollowers().size()+1);
+        fromUser.setNoOfFollowing(fromUser.getFollowing().size() + 1);
+        toUser.setNoOfFollowers(toUser.getFollowers().size() + 1);
 
         Followers follow = new Followers(fromUser, toUser);
         followersRepository.save(follow);
@@ -42,8 +42,8 @@ public class FollowersService {
 
         Followers follow = followersRepository.findByFromAndTo(fromUser, toUser)
                 .orElseThrow(() -> new RuntimeException("User is not following the target user."));
-        fromUser.setNoOfFollowing(fromUser.getFollowing().size()-1);
-        toUser.setNoOfFollowers(toUser.getFollowers().size()-1);
+        fromUser.setNoOfFollowing(fromUser.getFollowing().size() - 1);
+        toUser.setNoOfFollowers(toUser.getFollowers().size() - 1);
 
         followersRepository.delete(follow);
         return "User is Unfollow userId - " + toUser.getId();

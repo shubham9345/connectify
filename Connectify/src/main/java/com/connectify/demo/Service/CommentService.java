@@ -61,12 +61,13 @@ public class CommentService {
         commentRepository.deleteById(commentId);
         return "comment is deleted with Id - " + commentId;
     }
-    public int removeCommentByUserId(Long userId, Long postId,Long commentId) {
+
+    public int removeCommentByUserId(Long userId, Long postId, Long commentId) {
         String jpql = "DELETE FROM Comment c WHERE c.user.id = :userId AND c.post.id = :postId AND c.commentId = :commentId";
         return entityManager.createQuery(jpql)
                 .setParameter("userId", userId)
                 .setParameter("postId", postId)
-                .setParameter("commentId",commentId)
+                .setParameter("commentId", commentId)
                 .executeUpdate();
     }
 }

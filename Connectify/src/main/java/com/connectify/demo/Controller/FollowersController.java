@@ -22,8 +22,8 @@ public class FollowersController {
             @RequestParam("fromUserId") Long fromUserId,
             @RequestParam("toUserId") Long toUserId) {
         try {
-         String message = followersService.followUser(fromUserId, toUserId);
-            return new ResponseEntity<>(message,HttpStatus.OK);
+            String message = followersService.followUser(fromUserId, toUserId);
+            return new ResponseEntity<>(message, HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
@@ -44,8 +44,8 @@ public class FollowersController {
             @RequestParam("fromUserId") Long fromUserId,
             @RequestParam("toUserId") Long toUserId) {
         try {
-          String message = followersService.unfollowUser(fromUserId, toUserId);
-            return new ResponseEntity<>(message,HttpStatus.OK);
+            String message = followersService.unfollowUser(fromUserId, toUserId);
+            return new ResponseEntity<>(message, HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }

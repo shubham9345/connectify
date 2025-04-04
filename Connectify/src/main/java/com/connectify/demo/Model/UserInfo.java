@@ -1,6 +1,7 @@
 package com.connectify.demo.Model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,6 +31,7 @@ public class UserInfo {
     private int noOfFollowing;
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.ALL} ,orphanRemoval = true)
+    @JsonManagedReference
     private List<Post> posts;
 
     @OneToMany(mappedBy = "to",cascade = CascadeType.ALL, orphanRemoval = true)

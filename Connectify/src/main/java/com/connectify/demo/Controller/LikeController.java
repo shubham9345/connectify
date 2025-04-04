@@ -1,6 +1,5 @@
 package com.connectify.demo.Controller;
 
-import com.connectify.demo.Model.Comment;
 import com.connectify.demo.Model.Likes;
 import com.connectify.demo.Service.LikesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,7 @@ public class LikeController {
 
     @PostMapping("/add-like/{userId}/{postId}")
     public ResponseEntity<Likes> addComment(@PathVariable Long userId, @PathVariable Long postId) {
-         Likes likes = likeService.addLike( userId, postId);
+        Likes likes = likeService.addLike(userId, postId);
         return new ResponseEntity<Likes>(likes, HttpStatus.OK);
     }
 
@@ -34,12 +33,13 @@ public class LikeController {
         String message = likeService.deleteLikesById(likesId);
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
+
     @DeleteMapping("/delete/{userId}/{postId}")
-    public String removeLikeByUserId(@PathVariable Long userId , @PathVariable Long postId){
-      int ans = likeService.removeLikeByUserId(userId,postId);
-        if(ans == 1){
+    public String removeLikeByUserId(@PathVariable Long userId, @PathVariable Long postId) {
+        int ans = likeService.removeLikeByUserId(userId, postId);
+        if (ans == 1) {
             return "Remove Like on post with Id - " + postId;
-        }else{
+        } else {
             return "something wrong in remove Like on post with Id - " + postId;
         }
     }

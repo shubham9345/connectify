@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -19,7 +18,7 @@ public class PostController {
 
     @PostMapping("/add-post/{userId}")
     public ResponseEntity<Post> addPost(@RequestBody Post post, @PathVariable Long userId) {
-        Post newPost = postService.addPost(post,userId);
+        Post newPost = postService.addPost(post, userId);
         return new ResponseEntity<>(newPost, HttpStatus.OK);
     }
 
@@ -46,18 +45,19 @@ public class PostController {
     }
 
     @DeleteMapping("/delete-post/{userId}/{postId}")
-    public String removePostByUserId(@PathVariable Long userId , @PathVariable Long postId){
-       int ans = postService.removePostByUserId(userId,postId);
-       if(ans == 1){
-           return "post is deleted with Id - " + postId;
-       }else{
-           return "post is not deleted with Id - " + postId;
-       }
+    public String removePostByUserId(@PathVariable Long userId, @PathVariable Long postId) {
+        int ans = postService.removePostByUserId(userId, postId);
+        if (ans == 1) {
+            return "post is deleted with Id - " + postId;
+        } else {
+            return "post is not deleted with Id - " + postId;
+        }
 
     }
+
     @GetMapping("/all-post/{userId}")
-    public ResponseEntity<?> getPostByUserId(@PathVariable Long userId){
+    public ResponseEntity<?> getPostByUserId(@PathVariable Long userId) {
         List<Post> allPost = postService.allPostByUserId(userId);
-        return new ResponseEntity<>(allPost,HttpStatus.OK);
+        return new ResponseEntity<>(allPost, HttpStatus.OK);
     }
 }
