@@ -12,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/likes")
+@CrossOrigin
 public class LikeController {
     @Autowired
     private LikesService likeService;
@@ -34,7 +35,12 @@ public class LikeController {
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
     @DeleteMapping("/delete/{userId}/{postId}")
-    public int removeLikeByUserId(@PathVariable Long userId , @PathVariable Long postId){
-      return  likeService.removeLikeByUserId(userId,postId);
+    public String removeLikeByUserId(@PathVariable Long userId , @PathVariable Long postId){
+      int ans = likeService.removeLikeByUserId(userId,postId);
+        if(ans == 1){
+            return "Remove Like on post with Id - " + postId;
+        }else{
+            return "something wrong in remove Like on post with Id - " + postId;
+        }
     }
 }

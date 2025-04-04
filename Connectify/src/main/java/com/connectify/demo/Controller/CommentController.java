@@ -11,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/comment")
+@CrossOrigin
 public class CommentController {
     @Autowired
     private CommentService commentService;
@@ -32,8 +33,13 @@ public class CommentController {
         String message = commentService.deleteCommentById(commentId);
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
-    @DeleteMapping("/delete/{userId}/{postId}")
-    public int removeCommentByUserId(@PathVariable Long userId , @PathVariable Long postId){
-        return  commentService.removeCommentByUserId(userId,postId);
+    @DeleteMapping("/delete/{userId}/{postId}/{commentId}")
+    public String removeCommentByUserId(@PathVariable Long userId , @PathVariable Long postId,@PathVariable Long commentId){
+        int ans = commentService.removeCommentByUserId(userId,postId,commentId);
+        if(ans == 1){
+            return "Remove comment on post with Id - " + postId;
+        }else{
+            return "something wrong in remove comment on post with Id - " + postId;
+        }
     }
 }

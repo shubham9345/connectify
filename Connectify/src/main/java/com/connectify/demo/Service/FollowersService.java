@@ -3,12 +3,10 @@ package com.connectify.demo.Service;
 import com.connectify.demo.Model.Followers;
 import com.connectify.demo.Model.UserInfo;
 import com.connectify.demo.Repository.FollowersRepository;
-import com.connectify.demo.Repository.UserInfoRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.stream.Collectors;
 

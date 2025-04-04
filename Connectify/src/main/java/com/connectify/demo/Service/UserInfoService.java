@@ -17,6 +17,10 @@ public class UserInfoService {
     private PasswordEncoder passwordEncoder;
 
     public UserInfo AddUser(UserInfo user) {
+        UserInfo existingUser = userInfoRepository.findByUsername(user.getUsername());
+        if (existingUser != null) {
+            throw new RuntimeException("username already exist!!");
+        }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userInfoRepository.save(user);
     }

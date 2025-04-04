@@ -1,6 +1,5 @@
 package com.connectify.demo.Service;
 
-import com.connectify.demo.Model.Comment;
 import com.connectify.demo.Model.Likes;
 import com.connectify.demo.Model.Post;
 import com.connectify.demo.Model.UserInfo;
@@ -46,6 +45,7 @@ public class LikesService {
         likeRepository.save(likes);
         return likes;
     }
+
     public List<Likes> allLikesByPostId(Long postId) {
         Post post = postService.getPostById(postId);
         if (post == null) {
@@ -61,6 +61,7 @@ public class LikesService {
         likeRepository.deleteById(LikesId);
         return "Likes is deleted with Id - " + LikesId;
     }
+
     public int removeLikeByUserId(Long userId, Long postId) {
         String jpql = "DELETE FROM Likes l WHERE l.user.id = :userId AND l.posts.id = :postId";
         return entityManager.createQuery(jpql)

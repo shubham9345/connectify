@@ -26,6 +26,7 @@ import static Utility.ConstantUtil.INVALID_CREDENTIAL;
 
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin
 public class AuthController {
     @Autowired
     private UserInfoService userInfoService;
