@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -55,7 +56,9 @@ public class CommentService {
         if (post == null) {
             throw new RuntimeException("post not found this id");
         }
-        return post.getComments();
+        List<Comment> allComments = post.getComments();
+        Collections.reverse(allComments);
+        return allComments;
     }
 
     public String deleteCommentById(Long commentId) {

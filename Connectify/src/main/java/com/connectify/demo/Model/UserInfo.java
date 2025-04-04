@@ -31,7 +31,7 @@ public class UserInfo {
     private int noOfFollowing;
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.ALL} ,orphanRemoval = true)
-    @JsonManagedReference
+    @JsonIgnore
     private List<Post> posts;
 
     @OneToMany(mappedBy = "to",cascade = CascadeType.ALL, orphanRemoval = true)

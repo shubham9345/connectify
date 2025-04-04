@@ -1,6 +1,5 @@
 package com.connectify.demo.Model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -32,12 +31,11 @@ public class Post {
     @ManyToOne
     @JoinColumn(name = "user_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
-
-     @JsonIgnore
     private UserInfo user;
-
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Comment> comments;
     @OneToMany(mappedBy = "posts", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Likes> likes;
 }

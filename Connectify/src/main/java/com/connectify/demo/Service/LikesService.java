@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -52,7 +53,9 @@ public class LikesService {
         if (post == null) {
             throw new RuntimeException("post not found this id");
         }
-        return post.getLikes();
+        List<Likes> allLikes = post.getLikes();
+        Collections.reverse(allLikes);
+        return allLikes;
     }
 
     public String deleteLikesById(Long LikesId) {
