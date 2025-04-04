@@ -2,6 +2,7 @@ package com.connectify.demo.Controller;
 
 import com.connectify.demo.Model.ErrorResponse;
 import com.connectify.demo.Model.UserInfo;
+import com.connectify.demo.Repository.UserInfoRepository;
 import com.connectify.demo.Security.JwtRequest;
 import com.connectify.demo.Security.JwtResponse;
 import com.connectify.demo.Security.JwtUtil;
@@ -14,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -35,6 +35,8 @@ public class AuthController {
     private JwtUtil jwtUtil;
     @Autowired
     private AuthenticationManager authenticationManager;
+    @Autowired
+    private UserInfoRepository userInfoRepository;
 
     @PostMapping("/signup")
     public ResponseEntity<UserInfo> Signup(@RequestBody UserInfo userInfo) {
@@ -78,8 +80,8 @@ public class AuthController {
             throw new BadCredentialsException(INVALID_CREDENTIAL);
         }
 
-        UserDetails userDetails = customUserDetailService.loadUserByUsername(request.getUsername());
-        String token = this.jwtUtil.generateToken(userDetails.getUsername());
+        UserInfo userDetails = userInfoRepository.findByUsername(request.getUsername());
+        String token = this.jwtUtil.generateToken(userDetails.getUsername(),userDetails.getId());
         JwtResponse response = new JwtResponse(token);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

@@ -1,5 +1,6 @@
 package com.connectify.demo.Service;
 
+import com.connectify.demo.Exceptions.UserNotFoundException;
 import com.connectify.demo.Model.UserInfo;
 import com.connectify.demo.Repository.UserInfoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class UserInfoService {
     public UserInfo getUserbyId(Long Id) {
         Optional<UserInfo> UserOptional = userInfoRepository.findById(Id);
         if (UserOptional.isEmpty()) {
-            throw new RuntimeException("User not found with Id" + Id);
+            throw new UserNotFoundException("User not found with Id" + Id,"user is not found!! check it once");
         }
         return UserOptional.get();
     }
@@ -37,18 +38,9 @@ public class UserInfoService {
         return userInfoRepository.findAll();
     }
 
-//    public String deleteUserById(Long userId){
-//        Optional<UserInfo> UserOptional = userInfoRepository.findById(userId);
-//        if (UserOptional.isEmpty()) {
-//            throw new RuntimeException("User not found with Id" + userId);
-//        }
-//        userInfoRepository.deleteById(userId);
-//        return "User is deleted Successfully with id - " +userId;
-//    }
-
     public String deleteUserById(Long userId) {
         UserInfo user = userInfoRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with Id: " + userId));
+                .orElseThrow(() -> new UserNotFoundException("User not found with Id: " + userId,"user is not found!! check it once"));
 
         userInfoRepository.delete(user);
         return "User deleted successfully with id: " + userId;
@@ -57,7 +49,7 @@ public class UserInfoService {
     public UserInfo updatedUser(UserInfo userInfo, Long userId) {
         UserInfo existingUser = getUserbyId(userId);
         if (existingUser == null) {
-            throw new RuntimeException("User is not found with Id - " + userId);
+            throw new UserNotFoundException("User is not found with Id - " + userId,"user is not found!! check it once");
         }
         if (userInfo.getUserBio() != null) {
             existingUser.setUserBio(userInfo.getUserBio());
@@ -74,7 +66,7 @@ public class UserInfoService {
         if (userInfo.getUsername() != null) {
             existingUser.setUsername(userInfo.getUsername());
         }
-        if(userInfo.getUrl()!=null){
+        if (userInfo.getUrl() != null) {
             existingUser.setUrl(userInfo.getUrl());
         }
 

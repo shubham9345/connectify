@@ -1,5 +1,7 @@
 package com.connectify.demo.Service;
 
+import com.connectify.demo.Exceptions.PostNotFoundException;
+import com.connectify.demo.Exceptions.UserNotFoundException;
 import com.connectify.demo.Model.Post;
 import com.connectify.demo.Model.UserInfo;
 import com.connectify.demo.Repository.PostRepository;
@@ -29,7 +31,7 @@ public class PostService {
     public Post addPost(Post post, Long userId) {
 
         if (!userInfoRepository.existsById(userId)) {
-            throw new RuntimeException("user is not found by Id - " + userId);
+            throw new UserNotFoundException("user is not found by Id - " + userId,"user is not found!! check it once");
         }
         Optional<UserInfo> userInfo = userInfoRepository.findById(userId);
         UserInfo user = userInfo.get();
@@ -48,14 +50,14 @@ public class PostService {
     public Post getPostById(Long postId) {
         Optional<Post> post = postRepository.findById(postId);
         if (post.isEmpty()) {
-            throw new RuntimeException("post is not found by Id - " + postId);
+            throw new PostNotFoundException("post is not found by Id - " + postId,"Wrong postId check the postId once");
         }
         return post.get();
     }
 
     public String deletePostById(Long postId) {
         if (!postRepository.existsById(postId)) {
-            throw new RuntimeException("post is not found with Id- " + postId);
+            throw new PostNotFoundException("post is not found with Id- " + postId,"Wrong postId check the postId once");
         }
         postRepository.deleteById(postId);
         return "post is deleted successfully";
@@ -76,7 +78,7 @@ public class PostService {
     public List<Post> allPostByUserId(Long userId) {
         Optional<UserInfo> userInfo = userInfoRepository.findById(userId);
         if (userInfo.isEmpty()) {
-            throw new RuntimeException("user is not found with Id - " + userId);
+            throw new UserNotFoundException("user is not found with Id - " + userId, "user is not found!! check it once");
         }
         UserInfo user = userInfo.get();
         return user.getPosts();

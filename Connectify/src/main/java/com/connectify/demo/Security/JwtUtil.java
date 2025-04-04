@@ -45,8 +45,9 @@ public class JwtUtil {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    public String generateToken(String username) { // Use email as username
+    public String generateToken(String username,Long Id) { // Use email as username
         Map<String, Object> claims = new HashMap<>();
+        claims.put("userId",Id);
         return createToken(claims, username);
     }
 

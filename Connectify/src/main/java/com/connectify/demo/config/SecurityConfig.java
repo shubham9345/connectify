@@ -94,23 +94,23 @@ public class SecurityConfig {
         return new JwtAuthFilter(customUserDetailService, jwtUtil);
     }
 
-    @Bean
-    public CorsFilter corsFilter() {
-        log.info("======>>>> SecurityConfig.corsFilter()");
-        CorsConfiguration corsConfig = new CorsConfiguration();
-        Arrays.stream(corsProperties.getAllowedOrigins()).forEach(corsConfig::addAllowedOrigin);
-        Arrays.stream(corsProperties.getAllowedMethods()).forEach(corsConfig::addAllowedMethod);
-        Arrays.stream(corsProperties.getAllowedHeaders()).forEach(corsConfig::addAllowedHeader);
-        corsConfig.setAllowCredentials(true); // Allow cookies and credentials
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", corsConfig);
-        return new CorsFilter(source);
-    }
+//    @Bean
+//    public CorsFilter corsFilter() {
+//        log.info("======>>>> SecurityConfig.corsFilter()");
+//        CorsConfiguration corsConfig = new CorsConfiguration();
+//        Arrays.stream(corsProperties.getAllowedOrigins()).forEach(corsConfig::addAllowedOrigin);
+//        Arrays.stream(corsProperties.getAllowedMethods()).forEach(corsConfig::addAllowedMethod);
+//        Arrays.stream(corsProperties.getAllowedHeaders()).forEach(corsConfig::addAllowedHeader);
+//        corsConfig.setAllowCredentials(true); // Allow cookies and credentials
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", corsConfig);
+//        return new CorsFilter(source);
+//    }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
         configuration.setAllowCredentials(true);
