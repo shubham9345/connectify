@@ -18,11 +18,16 @@ public class UserInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String name;
+    private String userBio;
     private String username;
     private String url;
     private String email;
     private String password;
     private String roles;
+    private int noOfPost;
+    private int noOfFollowers;
+    private int noOfFollowing;
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.ALL} ,orphanRemoval = true)
     private List<Post> posts;

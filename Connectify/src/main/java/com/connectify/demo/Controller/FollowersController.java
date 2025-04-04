@@ -18,12 +18,12 @@ public class FollowersController {
     private FollowersService followersService;
 
     @PostMapping("/follow")
-    public ResponseEntity<?> followUser(
+    public ResponseEntity<String> followUser(
             @RequestParam("fromUserId") Long fromUserId,
             @RequestParam("toUserId") Long toUserId) {
         try {
-            followersService.followUser(fromUserId, toUserId);
-            return ResponseEntity.ok().build();
+         String message = followersService.followUser(fromUserId, toUserId);
+            return new ResponseEntity<>(message,HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
@@ -44,8 +44,8 @@ public class FollowersController {
             @RequestParam("fromUserId") Long fromUserId,
             @RequestParam("toUserId") Long toUserId) {
         try {
-            followersService.unfollowUser(fromUserId, toUserId);
-            return ResponseEntity.ok().build();
+          String message = followersService.unfollowUser(fromUserId, toUserId);
+            return new ResponseEntity<>(message,HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }

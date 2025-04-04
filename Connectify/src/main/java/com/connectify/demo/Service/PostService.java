@@ -31,7 +31,9 @@ public class PostService {
             throw new RuntimeException("user is not found by Id - " + userId);
         }
         Optional<UserInfo> userInfo = userInfoRepository.findById(userId);
-        post.setUser(userInfo.get());
+        UserInfo user = userInfo.get();
+        user.setNoOfPost(user.getPosts().size()+1);
+        post.setUser(user);
         post.setTime(LocalDateTime.now());
         return postRepository.save(post);
     }
@@ -56,10 +58,22 @@ public class PostService {
         return "post is deleted successfully";
     }
     public int removePostByUserId(Long userId, Long postId) {
+        Optional<UserInfo> user = userInfoRepository.findById(userId);
+        UserInfo userInfo = user.get();
+        userInfo.setNoOfPost(userInfo.getPosts().size()-1);
+        userInfoRepository.save(userInfo);
         String jpql = "DELETE FROM Post p WHERE p.user.id = :userId AND p.postId = :postId";
         return entityManager.createQuery(jpql)
                 .setParameter("userId", userId)
                 .setParameter("postId", postId)
                 .executeUpdate();
+        }
+        public List<Post> allPostByUserId(Long userId){
+          Optional<UserInfo> userInfo = userInfoRepository.findById(userId);
+          if(userInfo.isEmpty()){
+              throw new RuntimeException("user is not found with Id - " + userId);
+          }
+          UserInfo user = userInfo.get();
+          return user.getPosts();
         }
     }

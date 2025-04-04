@@ -55,4 +55,9 @@ public class PostController {
        }
 
     }
+    @GetMapping("/all-post/{userId}")
+    public ResponseEntity<?> getPostByUserId(@PathVariable Long userId){
+        List<Post> allPost = postService.allPostByUserId(userId);
+        return new ResponseEntity<>(allPost,HttpStatus.OK);
+    }
 }
