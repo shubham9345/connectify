@@ -34,4 +34,9 @@ public class UserInfo {
     @OneToMany(mappedBy = "from" ,cascade = CascadeType.ALL , orphanRemoval = true)
     @JsonIgnore
     private List<Followers> following;
+
+    @OneToMany(mappedBy = "user" ,cascade = CascadeType.ALL , orphanRemoval = true)
+    @JsonIgnore
+    private List<Likes> likes;
+
 }

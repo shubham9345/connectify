@@ -33,4 +33,8 @@ public class LikeController {
         String message = likeService.deleteLikesById(likesId);
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
+    @DeleteMapping("/delete/{userId}/{postId}")
+    public int removeLikeByUserId(@PathVariable Long userId , @PathVariable Long postId){
+      return  likeService.removeLikeByUserId(userId,postId);
+    }
 }

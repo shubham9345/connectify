@@ -5,6 +5,9 @@ import com.connectify.demo.Model.Likes;
 import com.connectify.demo.Model.Post;
 import com.connectify.demo.Model.UserInfo;
 import com.connectify.demo.Repository.LikesRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +15,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@Transactional
 public class LikesService {
     @Autowired
     private LikesRepository likeRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Autowired
     private UserInfoService userInfoService;
@@ -53,5 +60,12 @@ public class LikesService {
         }
         likeRepository.deleteById(LikesId);
         return "Likes is deleted with Id - " + LikesId;
+    }
+    public int removeLikeByUserId(Long userId, Long postId) {
+        String jpql = "DELETE FROM Likes l WHERE l.user.id = :userId AND l.posts.id = :postId";
+        return entityManager.createQuery(jpql)
+                .setParameter("userId", userId)
+                .setParameter("postId", postId)
+                .executeUpdate();
     }
 }

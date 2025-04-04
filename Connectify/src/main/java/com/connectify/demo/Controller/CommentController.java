@@ -32,4 +32,8 @@ public class CommentController {
         String message = commentService.deleteCommentById(commentId);
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
+    @DeleteMapping("/delete/{userId}/{postId}")
+    public int removeCommentByUserId(@PathVariable Long userId , @PathVariable Long postId){
+        return  commentService.removeCommentByUserId(userId,postId);
+    }
 }
