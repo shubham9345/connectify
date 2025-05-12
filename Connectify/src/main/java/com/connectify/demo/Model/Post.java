@@ -39,4 +39,7 @@ public class Post {
     @OneToMany(mappedBy = "posts", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Likes> likes;
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Notification> notifications;
 }

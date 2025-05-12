@@ -46,6 +46,7 @@ public class UserInfo {
     @JsonIgnore
     private List<Likes> likes;
     @OneToMany(mappedBy = "user", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.ALL})
+    @JsonIgnore
     private List<Notification> notifications;
 
 }

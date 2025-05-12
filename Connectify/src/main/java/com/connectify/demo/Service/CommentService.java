@@ -35,7 +35,7 @@ public class CommentService {
             throw new RuntimeException("User is not found with Id.");
         }
         Post post = postService.getPostById(postId);
-        post.setNoOfComments(post.getComments().size()+1);
+        post.setNoOfComments(post.getComments().size() + 1);
 //        UserInfo userInfo = post.getUser();
 //        if(userInfo.getId()==userId){
 //            throw new RuntimeException("")
@@ -44,21 +44,25 @@ public class CommentService {
             throw new RuntimeException("post not found this id");
         }
         List<Followers> followers = user.getFollowers();
-        for(int i = 0; i<followers.size(); i++){
-            List<Notification> notf  = followers.get(i).getFrom().getNotifications();
-            if(notf.isEmpty()){
+        for (int i = 0; i < followers.size(); i++) {
+            List<Notification> notf = followers.get(i).getFrom().getNotifications();
+            if (notf.isEmpty()) {
                 List<Notification> notfi = new ArrayList<>();
                 Notification notification = new Notification();
-                notification.setMessage("post with postId " + post.getPostId() +" is commented " +   "by user " + user.getName());
+                notification.setMessage("post with postId " + post.getPostId() + " is commented " + "by user " + user.getName());
                 notification.setUser(followers.get(i).getFrom());
                 notification.setTime(LocalDateTime.now());
+                notification.setByUserId(userId);
+                notification.setPost(post);
                 notfi.add(notification);
                 followers.get(i).getFrom().setNotifications(notfi);
-            }else{
+            } else {
                 Notification notification = new Notification();
-                notification.setMessage("post with postId " + post.getPostId() +" is commented " +   "by user " + user.getName());
+                notification.setMessage("post with postId " + post.getPostId() + " is commented " + "by user " + user.getName());
                 notification.setUser(followers.get(i).getFrom());
                 notification.setTime(LocalDateTime.now());
+                notification.setByUserId(userId);
+                notification.setPost(post);
                 notf.add(notification);
                 followers.get(i).getFrom().setNotifications(notf);
             }
@@ -94,7 +98,7 @@ public class CommentService {
 
     public int removeCommentByUserId(Long userId, Long postId, Long commentId) {
         Post post = postService.getPostById(postId);
-        post.setNoOfComments(post.getComments().size()-1);
+        post.setNoOfComments(post.getComments().size() - 1);
         String jpql = "DELETE FROM Comment c WHERE c.user.id = :userId AND c.post.id = :postId AND c.commentId = :commentId";
         return entityManager.createQuery(jpql)
                 .setParameter("userId", userId)

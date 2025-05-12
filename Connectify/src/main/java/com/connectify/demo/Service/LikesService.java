@@ -1,5 +1,6 @@
 package com.connectify.demo.Service;
 
+import com.connectify.demo.Exceptions.UserNotFoundException;
 import com.connectify.demo.Model.*;
 import com.connectify.demo.Repository.LikesRepository;
 import com.connectify.demo.Repository.UserInfoRepository;
@@ -7,6 +8,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -36,27 +38,34 @@ public class LikesService {
             throw new RuntimeException("User is not found with Id.");
         }
         Post post = postService.getPostById(postId);
-        post.setNoOfLikes(post.getLikes().size()+1);
+        post.setNoOfLikes(post.getLikes().size() + 1);
 
         if (post == null) {
             throw new RuntimeException("post not found this id");
         }
+        if (likeRepository.existsByPostsAndUser(post, user)) {
+            throw new UserNotFoundException("post is already Liked By user", "post is already liked by user");
+        }
         List<Followers> followers = user.getFollowers();
-        for(int i = 0; i<followers.size(); i++){
-            List<Notification> notf  = followers.get(i).getFrom().getNotifications();
-            if(notf.isEmpty()){
+        for (int i = 0; i < followers.size(); i++) {
+            List<Notification> notf = followers.get(i).getFrom().getNotifications();
+            if (notf.isEmpty()) {
                 List<Notification> notfi = new ArrayList<>();
                 Notification notification = new Notification();
-                notification.setMessage("post with postId  " + post.getPostId() + " is Liked by User " + user.getName());
+                notification.setMessage("post with postId  " + post.getPostId() + " is Liked by User " + user.getUsername());
                 notification.setUser(followers.get(i).getFrom());
                 notification.setTime(LocalDateTime.now());
+                notification.setByUserId(userId);
+                notification.setPost(post);
                 notfi.add(notification);
                 followers.get(i).getFrom().setNotifications(notfi);
-            }else{
+            } else {
                 Notification notification = new Notification();
-                notification.setMessage("post with postId  " + post.getPostId() + " is Liked by User " + user.getName());
+                notification.setMessage("post with postId  " + post.getPostId() + " is Liked by User " + user.getUsername());
                 notification.setUser(followers.get(i).getFrom());
                 notification.setTime(LocalDateTime.now());
+                notification.setByUserId(userId);
+                notification.setPost(post);
                 notf.add(notification);
                 followers.get(i).getFrom().setNotifications(notf);
             }
@@ -91,7 +100,7 @@ public class LikesService {
 
     public int removeLikeByUserId(Long userId, Long postId) {
         Post post = postService.getPostById(postId);
-        post.setNoOfLikes(post.getLikes().size()-1);
+        post.setNoOfLikes(post.getLikes().size() - 1);
         String jpql = "DELETE FROM Likes l WHERE l.user.id = :userId AND l.posts.id = :postId";
         return entityManager.createQuery(jpql)
                 .setParameter("userId", userId)

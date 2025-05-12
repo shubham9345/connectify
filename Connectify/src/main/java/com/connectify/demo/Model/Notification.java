@@ -23,5 +23,9 @@ public class Notification {
     @JsonIgnore
     private UserInfo user;
     private String message;
+    private Long byUserId;
+    @ManyToOne
+    @JoinColumn(name = "post_Id")
+    private Post post;
     private LocalDateTime time;
 }
