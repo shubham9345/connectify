@@ -3,6 +3,7 @@ package com.connectify.demo.Service;
 import com.connectify.demo.Model.Followers;
 import com.connectify.demo.Model.UserInfo;
 import com.connectify.demo.Repository.FollowersRepository;
+import com.connectify.demo.Repository.UserInfoRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,8 @@ public class FollowersService {
 
     @Autowired
     private UserInfoService userService;
+    @Autowired
+    private UserInfoRepository userInfoRepository;
 
     @Transactional
     public String followUser(Long fromUserId, Long toUserId) {
@@ -32,6 +35,9 @@ public class FollowersService {
 
         Followers follow = new Followers(fromUser, toUser);
         followersRepository.save(follow);
+        userInfoRepository.save(fromUser);
+        userInfoRepository.save(toUser);
+
         return "User is Following to userId - " + toUser.getId();
     }
 
@@ -42,10 +48,14 @@ public class FollowersService {
 
         Followers follow = followersRepository.findByFromAndTo(fromUser, toUser)
                 .orElseThrow(() -> new RuntimeException("User is not following the target user."));
-        fromUser.setNoOfFollowing(fromUser.getFollowing().size() - 1);
-        toUser.setNoOfFollowers(toUser.getFollowers().size() - 1);
-
+        fromUser.getFollowing().remove(follow);
+        toUser.getFollowers().remove(follow);
+        fromUser.setNoOfFollowing(fromUser.getFollowing().size());
+        toUser.setNoOfFollowers(toUser.getFollowers().size());
+        userInfoRepository.save(fromUser);
+        userInfoRepository.save(toUser);
         followersRepository.delete(follow);
+
         return "User is Unfollow userId - " + toUser.getId();
     }
 
