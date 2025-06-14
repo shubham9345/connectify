@@ -96,16 +96,31 @@ public class PostService {
         return "post is deleted successfully";
     }
 
+    @Transactional
     public int removePostByUserId(Long userId, Long postId) {
-        Optional<UserInfo> user = userInfoRepository.findById(userId);
-        UserInfo userInfo = user.get();
-        userInfo.setNoOfPost(userInfo.getPosts().size() - 1);
-        userInfoRepository.save(userInfo);
-        String jpql = "DELETE FROM Post p WHERE p.user.id = :userId AND p.postId = :postId";
-        return entityManager.createQuery(jpql)
-                .setParameter("userId", userId)
+
+        Post post = entityManager.find(Post.class, postId);
+        if (post == null || !post.getUser().getId().equals(userId)) {
+            return 0;
+        }
+
+        int deletedNotifications = entityManager.createQuery(
+                        "DELETE FROM Notification n WHERE n.post.postId = :postId")
                 .setParameter("postId", postId)
                 .executeUpdate();
+
+        Optional<UserInfo> userOpt = userInfoRepository.findById(userId);
+        if (userOpt.isPresent()) {
+            UserInfo userInfo = userOpt.get();
+
+            int newCount = userInfo.getNoOfPost() > 0
+                    ? userInfo.getNoOfPost() - 1
+                    : 0;
+            userInfo.setNoOfPost(newCount);
+            userInfoRepository.save(userInfo);
+        }
+        entityManager.remove(post);
+        return 1;
     }
 
     public List<Post> allPostByUserId(Long userId) {
