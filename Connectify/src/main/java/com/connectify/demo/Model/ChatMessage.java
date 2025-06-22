@@ -1,26 +1,41 @@
 package com.connectify.demo.Model;
 
+
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@Table(name = "chat_messages")
 public class ChatMessage {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long chatId;
+    private Long id;
+
+    private String sender;    // username or userId string
+    private String recipient; // username or userId string
+    private String roomId;
+    @Column(columnDefinition = "TEXT")
     private String content;
-    // Use a many-to-one relationship for the sender:
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private UserInfo sender;
-    private LocalDateTime time;
+
+    private Instant timestamp;
+
+    // Constructors, getters, setters
+    public ChatMessage() {}
+
+    public ChatMessage(String sender, String recipient, String content, Instant timestamp, String roomId) {
+        this.sender = sender;
+        this.recipient = recipient;
+        this.content = content;
+        this.timestamp = timestamp;
+        this.roomId = roomId;
+    }
+
 }

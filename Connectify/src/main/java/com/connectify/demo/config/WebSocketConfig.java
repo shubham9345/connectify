@@ -1,49 +1,66 @@
 package com.connectify.demo.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.connectify.demo.Security.Handler.JwtHandshakeInterceptor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.converter.DefaultContentTypeResolver;
-import org.springframework.messaging.converter.MappingJackson2MessageConverter;
-import org.springframework.messaging.converter.MessageConverter;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
-import org.springframework.util.MimeTypeUtils;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
 
-import java.util.List;
+import java.security.Principal;
+import java.util.Map;
 
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    // Register a STOMP endpoint that the client will use to connect to the WebSocket server.
+    @Autowired
+    private JwtHandshakeInterceptor jwtHandshakeInterceptor;
+
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        // This endpoint will be used by SockJS clients.
-        registry.addEndpoint("/ws")
-                .setAllowedOrigins("*") // Configure allowed origins as needed
+        // SockJS endpoint for browser
+        registry.addEndpoint("/ws-chat")
+                .addInterceptors(jwtHandshakeInterceptor)
+                .setHandshakeHandler(defaultHandshakeHandler())
+                .setAllowedOriginPatterns("*")
                 .withSockJS();
+
+        // Plain WebSocket endpoint for testing
+        registry.addEndpoint("/ws-chat-plain")
+                .addInterceptors(jwtHandshakeInterceptor)
+                .setHandshakeHandler(defaultHandshakeHandler())
+                .setAllowedOriginPatterns("*");
     }
 
-    // Configure message broker options.
     @Override
-    public void configureMessageBroker(MessageBrokerRegistry registry) {
-        // Set a prefix for filtering destinations targeting application annotated methods (e.g., @MessageMapping)
-        registry.setApplicationDestinationPrefixes("/app");
-        // Enable a simple in-memory broker with destination prefix “/topic” (broadcast) and/or “/queue” (private)
-        registry.enableSimpleBroker("/user");
-        registry.setUserDestinationPrefix("/user");
-    }
-    @Override
-    public boolean configureMessageConverters(List<MessageConverter> messageConverters) {
-        DefaultContentTypeResolver resolver = new DefaultContentTypeResolver();
-        resolver.setDefaultMimeType(MimeTypeUtils.APPLICATION_JSON);
-        MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
-        converter.setObjectMapper(new ObjectMapper());
-        converter.setContentTypeResolver(resolver);
-        messageConverters.add(converter);
-        return false;
+    public void configureMessageBroker(MessageBrokerRegistry config) {
+        config.enableSimpleBroker("/topic", "/queue");
+        config.setApplicationDestinationPrefixes("/app");
+//        config.setUserDestinationPrefix("/user");
     }
 
+    @Bean
+    public DefaultHandshakeHandler defaultHandshakeHandler() {
+        return new DefaultHandshakeHandler() {
+            @Override
+            protected Principal determineUser(org.springframework.http.server.ServerHttpRequest request,
+                                              WebSocketHandler wsHandler,
+                                              Map<String, Object> attributes) {
+                Object auth = attributes.get("auth");
+                if (auth instanceof Authentication) {
+                    Object principal = ((Authentication) auth).getPrincipal();
+                    if (principal instanceof Principal) {
+                        return (Principal) principal;
+                    }
+                }
+                return super.determineUser(request, wsHandler, attributes);
+            }
+        };
+    }
 }

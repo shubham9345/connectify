@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Minimal STOMP Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
+</head>
+<body>
+<h3>Minimal STOMP Test</h3>
+<label>Your name: <input id="username" value="user1"></label><br>
+<label>Send to: <input id="recipient" value="user2"></label><br>
+<label>Message: <input id="content"></label><button onclick="send()">Send</button>
+<ul id="msgs"></ul>
+<script>
+    const user = document.getElementById("username").value;
+    // Connect without token
+    const socket = new SockJS("/ws-test");
+    const client = Stomp.over(socket);
+    client.connect({}, function(frame) {
+      console.log("Connected:", frame);
+      client.subscribe("/user/queue/messages", function(m) {
+        const obj = JSON.parse(m.body);
+        const li = document.createElement("li");
+        li.textContent = obj.sender + ": " + obj.content;
+        document.getElementById("msgs").appendChild(li);
+      });
+    }, function(err) {
+      console.error("Error:", err);
+    });
+    function send() {
+      const rec = document.getElementById("recipient").value;
+      const content = document.getElementById("content").value;
+      client.send("/app/chat.send", {}, JSON.stringify({ recipient: rec, content }));
+    }
+</script>
+</body>
+</html>

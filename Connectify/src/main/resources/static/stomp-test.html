@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>STOMP One-to-One Chat Rooms</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        input, button, select { padding: 8px; margin: 5px 0; }
+        #chatWindow { border: 1px solid #ccc; height: 300px; overflow:auto; padding: 10px; margin-bottom:10px; }
+        .me { text-align: right; color: blue; margin: 2px 0; }
+        .other { text-align: left; color: green; margin: 2px 0; }
+    </style>
+</head>
+<body>
+
+<h2>STOMP One-to-One Chat Rooms</h2>
+
+<div id="loginUI">
+    <label>JWT Token:</label><br>
+    <input type="text" id="jwtToken" placeholder="Paste your JWT here" style="width:400px;"><br>
+    <button onclick="connect()">Connect</button>
+</div>
+
+<div id="chatUI" style="display:none;">
+    <p>Logged in as: <strong id="currentUser"></strong></p>
+    <label>Chat with: <input type="text" id="partnerInput" placeholder="Enter username"/><button onclick="joinChat()">Join</button></label>
+    <p>Current chat partner: <span id="currentChatUser">None</span></p>
+    <div id="chatWindow"></div>
+    <label>Message: <input type="text" id="content" placeholder="Enter message" style="width:300px;"></label>
+    <button onclick="sendMessage()">Send</button>
+</div>
+
+<script>
+    let stompClient = null;
+    let currentUser = null;
+    let currentChatUser = null;
+    let subscription = null;
+
+    function decodeJWT(token) {
+        try {
+            const payload = token.split('.')[1];
+            const json = atob(payload);
+            return JSON.parse(json);
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function connect() {
+        const token = document.getElementById("jwtToken").value.trim();
+        if (!token) {
+            alert("Please enter a JWT token.");
+            return;
+        }
+        const userData = decodeJWT(token);
+        if (!userData || !userData.sub) {
+            alert("Invalid JWT token.");
+            return;
+        }
+        currentUser = userData.sub;
+        document.getElementById("currentUser").innerText = currentUser;
+        document.getElementById("loginUI").style.display = "none";
+        document.getElementById("chatUI").style.display = "block";
+
+        // Connect via SockJS with token query param
+        const socket = new SockJS("/ws-chat?token=" + encodeURIComponent(token));
+        stompClient = Stomp.over(socket);
+        stompClient.debug = null;
+
+        stompClient.connect({}, function () {
+            console.log("Connected to STOMP as", currentUser);
+            // Wait until joinChat() is called to subscribe
+        }, function (error) {
+            console.error("Connection error:", error);
+            alert("Failed to connect. Check your token or backend logs.");
+            document.getElementById("loginUI").style.display = "";
+            document.getElementById("chatUI").style.display = "none";
+        });
+    }
+
+    function roomId(user1, user2) {
+        return [user1, user2].sort().join("_");
+    }
+
+    function joinChat() {
+        const partner = document.getElementById("partnerInput").value.trim();
+        if (!partner) {
+            alert("Enter a username to chat with.");
+            return;
+        }
+        if (!stompClient || !stompClient.connected) {
+            alert("Not connected yet.");
+            return;
+        }
+        // Unsubscribe previous if any
+        if (subscription) {
+            subscription.unsubscribe();
+            subscription = null;
+        }
+        currentChatUser = partner;
+        document.getElementById("currentChatUser").innerText = currentChatUser;
+        document.getElementById("chatWindow").innerHTML = ''; // clear window
+
+        const rid = roomId(currentUser, currentChatUser);
+        // Subscribe to topic/chat/{roomId}
+        subscription = stompClient.subscribe("/topic/chat/" + rid, function (message) {
+            const msg = JSON.parse(message.body);
+            appendMessage(msg);
+        });
+        // Optionally fetch history via REST here, then append messages
+    }
+
+    function appendMessage(msg) {
+        // msg: { sender, content, timestamp, roomId? }
+        const chatWindow = document.getElementById("chatWindow");
+        const div = document.createElement("div");
+        if (msg.sender === currentUser) {
+            div.classList.add("me");
+            div.textContent = `You: ${msg.content}`;
+        } else {
+            div.classList.add("other");
+            div.textContent = `${msg.sender}: ${msg.content}`;
+        }
+        chatWindow.appendChild(div);
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+
+    function sendMessage() {
+        if (!currentChatUser) {
+            alert("Join a chat first.");
+            return;
+        }
+        const content = document.getElementById("content").value.trim();
+        if (!content) {
+            alert("Enter a message.");
+            return;
+        }
+        const chatMessage = { recipient: currentChatUser, content };
+        stompClient.send("/app/chat.send", {}, JSON.stringify(chatMessage));
+        // Optionally append immediately:
+        appendMessage({ sender: currentUser, content });
+        document.getElementById("content").value = "";
+    }
+</script>
+
+</body>
+</html>
