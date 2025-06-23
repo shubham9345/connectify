@@ -1,6 +1,6 @@
 # ---- STAGE 1: Build ----
 # Use an official Maven image with JDK 17 to build the application
-FROM maven:3.8.7-openjdk-17-slim AS build
+FROM maven:3.8.5-openjdk-17 AS build
 
 # Set working directory
 WORKDIR /connectify
