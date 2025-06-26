@@ -1,42 +1,33 @@
 # ---- STAGE 1: Build ----
-# Use an official Maven image with JDK 17 to build the application
-FROM maven:3.8.7-openjdk-17-slim AS build
+FROM maven:3.8.5-openjdk-17 AS build
 
-# Set working directory
-WORKDIR /workspace
+# Set a consistent working directory inside the build image
+WORKDIR /app
 
-# Copy Maven configuration first for dependency resolution caching
-COPY pom.xml .
-# If you have a settings.xml or parent POM, copy them as needed:
-# COPY settings.xml .
-# COPY parent-pom.xml .
+# Copy Maven config for dependency caching
+COPY Connectify/pom.xml .
 
-# Download dependencies (this leverages Docker cache: if pom.xml unchanged, skips re-download)
+# Pre-fetch dependencies
 RUN mvn dependency:go-offline -B
 
-# Copy the rest of the source code
-COPY src ./src
+# Copy source code
+COPY Connectify/src ./src
+# If you have other files (e.g., resources outside src), copy them too:
+# COPY Connectify/src/main/resources ./src/main/resources
+# COPY Connectify/settings.xml (or other config) if needed
 
-# Build the Spring Boot fat JAR (skip tests if desired; remove -DskipTests to run tests)
+# Build the Spring Boot fat JAR
 RUN mvn clean package -DskipTests -B
 
 # ---- STAGE 2: Runtime ----
-# Use a minimal JRE image. Debian-slim-based Eclipse Temurin JRE is a good choice.
-FROM eclipse-temurin:17-jre-jammy
-
-# Set a non-root user if desired (uncomment to enhance security)
-# RUN addgroup --system appgroup && adduser --system appuser --ingroup appgroup
-# USER appuser
+FROM openjdk:17-jdk-slim AS runtime
 
 WORKDIR /app
 
-# Copy the built jar from the build stage
-COPY --from=build /workspace/target/*.jar app.jar
+# Copy the built jar from the build stage; adjust wildcard if you know exact name
+COPY --from=build /app/target/*.jar ./app.jar
 
-# (Optional) Expose port; adjust if your app uses a different port
+# Expose port (adjust if your app uses a different port)
 EXPOSE 8080
 
-# Use a simple entrypoint. You can pass JVM options via environment variable if desired.
-ENV JAVA_OPTS=""
-
-ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
