@@ -11,6 +11,7 @@ import java.util.List;
 public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> {
     List<ChatMessage> findByRoomIdOrderByTimestampAsc(String roomId);
     List<ChatMessage> findRoomIdBySender(String sender);
+    List<ChatMessage> findRoomIdByrecipient(String sender);
 //    @Query("SELECT DISTINCT c.roomId FROM ChatMessage c WHERE c.sender = :sender")
 //    List<String> findRoomIdBySender(@Param("sender") String sender);
 //    ChatMessage findChatMessageByRoomId(String roomId);

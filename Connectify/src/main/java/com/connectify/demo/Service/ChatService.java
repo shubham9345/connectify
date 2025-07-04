@@ -64,8 +64,13 @@ public class ChatService {
     }
     public Set<String> allRoomId(String sender){
         List<ChatMessage> allChatMessage = messageRepository.findRoomIdBySender(sender);
+        List<ChatMessage> allChatMessageByRecipient = messageRepository.findRoomIdByrecipient(sender);
         Set<String> allRoomsId = new HashSet<>();
         for(ChatMessage cm : allChatMessage){
+            String roomId = cm.getRoomId();
+            allRoomsId.add(roomId);
+        }
+        for(ChatMessage cm : allChatMessageByRecipient){
             String roomId = cm.getRoomId();
             allRoomsId.add(roomId);
         }
