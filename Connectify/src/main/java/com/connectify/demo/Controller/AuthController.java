@@ -101,7 +101,7 @@ public class AuthController {
         return new ResponseEntity<>(allUser, HttpStatus.OK);
     }
 
-    @DeleteMapping("/x  /{userId}")
+    @DeleteMapping("delete/{userId}")
     public ResponseEntity<String> deleteUserById(@PathVariable Long userId) {
         String mess = userInfoService.deleteUserById(userId);
         return new ResponseEntity<>(mess, HttpStatus.OK);
