@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -53,15 +52,23 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll()
-                       .requestMatchers("/ws-chat/**").permitAll()
+                                .requestMatchers("/auth/**").permitAll()
+                                .requestMatchers("/ws-chat/**").permitAll()
 //                        .requestMatchers("/ws-chat/**", "/topic/**", "/queue/**", "/app/**", "/user/**").permitAll()
-                        .requestMatchers("/stomp-test.html").permitAll()
+                                .requestMatchers("/stomp-test.html").permitAll()
+                                .requestMatchers(
+                                        "/swagger-ui/**",
+                                        "/swagger-ui.html",
+                                        "/v3/api-docs/**",
+                                        "/v3/api-docs.yaml",
+                                        "/swagger-resources/**",
+                                        "/swagger-ui/index.html"
+                                ).permitAll()
 //                        .requestMatchers(HttpMethod.GET, "/api/chat/history/*").permitAll()
 //                        .requestMatchers("/websocket/**", "/info", "/error").permitAll()
-                       .requestMatchers("/api/*/*").permitAll()
-                        .requestMatchers("/admin").hasRole("Admin")
-                        .anyRequest().authenticated()
+                                .requestMatchers("/api/*/*").permitAll()
+                                .requestMatchers("/admin").hasRole("Admin")
+                                .anyRequest().authenticated()
                 )
                 .exceptionHandling(exceptions -> exceptions
                         .accessDeniedHandler(jwtAccessDeniedHandler)
@@ -113,7 +120,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:8000", "http://127.0.0.1:5500", "http://localhost:5173","https://connectify-ten-xi.vercel.app"));
+        configuration.setAllowedOrigins(List.of("http://localhost:8000","http://localhost:8080", "http://127.0.0.1:5500", "http://localhost:5173", "https://connectify-ten-xi.vercel.app"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
         configuration.setAllowCredentials(true);
