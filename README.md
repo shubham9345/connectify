@@ -29,6 +29,6 @@ This layer provides common functions, such as logging, date formatting, configur
   <li><b> Security Layer: </li></b>
 Integrate Spring Security or OAuth2 for authenticating and authorizing API requests. Security configurations can be placed in a separate config package.
   <li><b>Aspect Layer:</li> </b>This layer encapsulates logging functionality through a dedicated aspect class, which leverages pointcut expressions to intercept REST API calls, and separate pointcut expression class for writing pointcut expression.
-   <li><b>Exception Layer:</li></b> This layer is responsible for centralized exception management using custom exception classes and a global exception handler. It ensures consistent and meaningful error responses across the application while improving maintainability and simplifying debugging.
+   <li><b>Exception Layer:</li></b> This layer is responsible for centralized exception management using custom exception classes and a global exception handler. It ensures consistent and meaningful error responses across the applications while improving maintainability and simplifying debugging.
 </ul>
 
