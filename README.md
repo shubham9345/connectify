@@ -12,5 +12,5 @@ implementations.
 5. Implemented a exception handler for handling custom exception that captures and reports detailed error information, streamlining debugging and improving error transparency.
 
 # Tech Stack 🧰 
- Java, Adanced java, Oops, Exception Handling, Spring, Springboot, Spring Security,Spring Aop, JWT authentication, microservices, Hibernate,Hql, MySQL, REST API, 
+ Java, Adanced java, Oops, Exception Handling, Spring, Springboot, Spring Security,Spring Aop, JWT authentication, Hibernate,Hql, MySQL, REST API, 
  
