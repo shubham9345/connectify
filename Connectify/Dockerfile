@@ -1,33 +1,25 @@
 # ---- STAGE 1: Build ----
-FROM maven:3.8.5-openjdk-17 AS build
+FROM maven:3.8.5-eclipse-temurin-17 AS build
 
-# Set a consistent working directory inside the build image
 WORKDIR /app
 
-# Copy Maven config for dependency caching
+# Copy Maven config and fetch dependencies
 COPY Connectify/pom.xml .
-
-# Pre-fetch dependencies
 RUN mvn dependency:go-offline -B
 
-# Copy source code
+# Copy source and build
 COPY Connectify/src ./src
-# If you have other files (e.g., resources outside src), copy them too:
-# COPY Connectify/src/main/resources ./src/main/resources
-# COPY Connectify/settings.xml (or other config) if needed
-
-# Build the Spring Boot fat JAR
 RUN mvn clean package -DskipTests -B
 
 # ---- STAGE 2: Runtime ----
-FROM openjdk:17-jdk-slim AS runtime
+# Use a slim Eclipse Temurin JRE image for smaller runtime
+FROM eclipse-temurin:17-jre-jammy AS runtime
 
 WORKDIR /app
 
-# Copy the built jar from the build stage; adjust wildcard if you know exact name
+# Copy the built jar
 COPY --from=build /app/target/*.jar ./app.jar
 
-# Expose port (adjust if your app uses a different port)
 EXPOSE 8080
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
