@@ -4,11 +4,11 @@ FROM maven:3.8.5-eclipse-temurin-17 AS build
 WORKDIR /app
 
 # Copy Maven config and fetch dependencies
-COPY Connectify/pom.xml .
+COPY Connectify/Connectify/pom.xml .
 RUN mvn dependency:go-offline -B
 
 # Copy source and build
-COPY Connectify/src ./src
+COPY Connectify/Connectify/src ./src
 RUN mvn clean package -DskipTests -B
 
 # ---- STAGE 2: Runtime ----
