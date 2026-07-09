@@ -1,15 +1,18 @@
 package com.connectify.demo.Controller;
 
+import com.connectify.demo.Dto.SignupRequest;
 import com.connectify.demo.Model.ErrorResponse;
 import com.connectify.demo.Model.UserInfo;
 import com.connectify.demo.Repository.UserInfoRepository;
 import com.connectify.demo.Security.JwtRequest;
 import com.connectify.demo.Security.JwtResponse;
 import com.connectify.demo.Security.JwtUtil;
-import com.connectify.demo.Service.CustomUserDetailService;
-import com.connectify.demo.Service.UserInfoService;
+import com.connectify.demo.ServiceImpl.UserInfoServiceImpl;
+import com.connectify.demo.service.UserInfoService;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,32 +29,28 @@ import static Utility.ConstantUtil.INVALID_CREDENTIAL;
 @RestController
 @RequestMapping("/auth")
 @CrossOrigin
+@RequiredArgsConstructor
 public class AuthController {
-    @Autowired
-    private UserInfoService userInfoService;
-    @Autowired
-    private CustomUserDetailService customUserDetailService;
-    @Autowired
-    private JwtUtil jwtUtil;
-    @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
-    private UserInfoRepository userInfoRepository;
+
+    private final UserInfoService userInfoService;
+    private final JwtUtil jwtUtil;
+    private final AuthenticationManager authenticationManager;
+    private final UserInfoRepository userInfoRepository;
 
     @PostMapping("/signup")
-    public ResponseEntity<UserInfo> Signup(@RequestBody UserInfo userInfo) {
+    public ResponseEntity<UserInfo> Signup( @Valid @RequestBody SignupRequest signupRequest) {
         try {
-            if (userInfo.getPassword() == null || userInfo.getUsername() == null) {
+            if (signupRequest.getPassword() == null || signupRequest.getUsername() == null) {
                 throw new RuntimeException(INVALID_CREDENTIAL);
 
             }
-            if (userInfo.getPassword().equals(" ") || userInfo.getUsername().equals(" ") || userInfo.getPassword().isEmpty() || userInfo.getUsername().isEmpty()) {
+            if (signupRequest.getPassword().equals(" ") || signupRequest.getUsername().equals(" ") || signupRequest.getPassword().isEmpty() || signupRequest.getUsername().isEmpty()) {
                 throw new RuntimeException(INVALID_CREDENTIAL);
             }
-            if (userInfo.getRoles() == null) {
-                userInfo.setRoles("User");
+            if (signupRequest.getRoles() == null) {
+                signupRequest.setRoles("User");
             }
-            UserInfo newUser = userInfoService.AddUser(userInfo);
+            UserInfo newUser = userInfoService.AddUser(signupRequest);
             return new ResponseEntity<>(newUser, HttpStatus.CREATED);
 
         } catch (Exception e) {
@@ -92,13 +91,18 @@ public class AuthController {
         return new ResponseEntity<>(userInfo, HttpStatus.OK);
     }
 
-    @GetMapping("/all-user")
-    public ResponseEntity<List<UserInfo>> allUser() {
-        List<UserInfo> allUser = userInfoService.getAllUser();
-        if (allUser == null) {
-            throw new RuntimeException("no user is found");
-        }
-        return new ResponseEntity<>(allUser, HttpStatus.OK);
+    @GetMapping("/users")
+    public ResponseEntity<Page<UserInfo>> getAllUsers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+
+        return ResponseEntity.ok(
+                userInfoService.getAllUser(
+                        page,
+                        size
+                )
+        );
     }
 
     @DeleteMapping("delete/{userId}")

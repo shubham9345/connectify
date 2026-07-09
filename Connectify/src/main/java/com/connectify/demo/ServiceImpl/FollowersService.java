@@ -1,4 +1,4 @@
-package com.connectify.demo.Service;
+package com.connectify.demo.ServiceImpl;
 
 import com.connectify.demo.Model.Followers;
 import com.connectify.demo.Model.UserInfo;
@@ -18,7 +18,7 @@ public class FollowersService {
     private FollowersRepository followersRepository;
 
     @Autowired
-    private UserInfoService userService;
+    private UserInfoServiceImpl userService;
     @Autowired
     private UserInfoRepository userInfoRepository;
 

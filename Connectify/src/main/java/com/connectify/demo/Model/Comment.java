@@ -16,6 +16,27 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(
+        name = "comment",
+        indexes = {
+                @Index(
+                        name = "idx_comment_post",
+                        columnList = "postId"
+                ),
+                @Index(
+                        name = "idx_comment_user",
+                        columnList = "userId"
+                ),
+                @Index(
+                        name = "idx_comment_time",
+                        columnList = "time"
+                ),
+                @Index(
+                        name = "idx_comment_post_time",
+                        columnList = "postId,time"
+                )
+        }
+)
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

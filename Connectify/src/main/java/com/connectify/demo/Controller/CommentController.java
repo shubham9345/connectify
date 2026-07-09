@@ -1,8 +1,12 @@
 package com.connectify.demo.Controller;
 
+import com.connectify.demo.Dto.CommentResponse;
 import com.connectify.demo.Model.Comment;
-import com.connectify.demo.Service.CommentService;
+import com.connectify.demo.ServiceImpl.CommentServiceImpl;
+import com.connectify.demo.service.CommentService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,9 +16,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/comment")
 @CrossOrigin
+@RequiredArgsConstructor
 public class CommentController {
-    @Autowired
-    private CommentService commentService;
+
+    private final CommentService commentService;
 
     @PostMapping("/add-comment/{userId}/{postId}")
     public ResponseEntity<Comment> addComment(@RequestBody String message, @PathVariable Long userId, @PathVariable Long postId) {
@@ -23,9 +28,19 @@ public class CommentController {
     }
 
     @GetMapping("/all-comments/{postId}")
-    public ResponseEntity<List<Comment>> allCommentsByPostId(@PathVariable Long postId) {
-        List<Comment> allComments = commentService.allCommentsByPostId(postId);
-        return new ResponseEntity<>(allComments, HttpStatus.OK);
+    public ResponseEntity<Page<CommentResponse>> getCommentsByPostId(
+            @PathVariable Long postId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+
+        return ResponseEntity.ok(
+                commentService.allCommentsByPostId(
+                        postId,
+                        page,
+                        size
+                )
+        );
     }
 
     @DeleteMapping("/delete/{commentId}")

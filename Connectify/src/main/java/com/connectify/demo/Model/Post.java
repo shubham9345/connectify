@@ -17,7 +17,23 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "post")
+@Table(
+        name = "post",
+        indexes = {
+                @Index(
+                        name = "idx_post_user",
+                        columnList = "user_id"
+                ),
+                @Index(
+                        name = "idx_post_time",
+                        columnList = "time"
+                ),
+                @Index(
+                        name = "idx_post_user_time",
+                        columnList = "user_id,time"
+                )
+        }
+)
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

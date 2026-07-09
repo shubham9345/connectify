@@ -1,4 +1,4 @@
-package com.connectify.demo.Service;
+package com.connectify.demo.ServiceImpl;
 
 import com.connectify.demo.Model.UserInfo;
 import com.connectify.demo.Model.UserInfoDetails;

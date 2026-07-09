@@ -1,8 +1,11 @@
 package com.connectify.demo.Controller;
 
+import com.connectify.demo.Dto.LikeResponse;
 import com.connectify.demo.Model.Likes;
-import com.connectify.demo.Service.LikesService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.connectify.demo.ServiceImpl.LikesServiceImpl;
+import com.connectify.demo.service.LikesService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,9 +15,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/likes")
 @CrossOrigin
+@RequiredArgsConstructor
 public class LikeController {
-    @Autowired
-    private LikesService likeService;
+
+    private final LikesService likeService;
 
     @PostMapping("/add-like/{userId}/{postId}")
     public ResponseEntity<Likes> addComment(@PathVariable Long userId, @PathVariable Long postId) {
@@ -22,10 +26,20 @@ public class LikeController {
         return new ResponseEntity<Likes>(likes, HttpStatus.OK);
     }
 
-    @GetMapping("/all-likes/{postId}")
-    public ResponseEntity<List<Likes>> allLikesByPostId(@PathVariable Long postId) {
-        List<Likes> allLikes = likeService.allLikesByPostId(postId);
-        return new ResponseEntity<>(allLikes, HttpStatus.OK);
+    @GetMapping("/post/{postId}")
+    public ResponseEntity<Page<LikeResponse>> getLikesByPostId(
+            @PathVariable Long postId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+
+        return ResponseEntity.ok(
+                likeService.allLikesByPostId(
+                        postId,
+                        page,
+                        size
+                )
+        );
     }
 
     @DeleteMapping("/delete/{likesId}")

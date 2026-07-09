@@ -1,6 +1,6 @@
 package com.connectify.demo.Security;
 
-import com.connectify.demo.Service.CustomUserDetailService;
+import com.connectify.demo.ServiceImpl.CustomUserDetailService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

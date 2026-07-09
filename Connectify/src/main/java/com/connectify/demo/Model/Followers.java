@@ -11,6 +11,32 @@ import org.hibernate.annotations.OnDeleteAction;
 @Getter
 @Setter
 @AllArgsConstructor
+@Table(
+        name = "followers",
+        indexes = {
+                @Index(
+                        name = "idx_followers_from_user",
+                        columnList = "from_user_fk"
+                ),
+                @Index(
+                        name = "idx_followers_to_user",
+                        columnList = "to_user_fk"
+                ),
+                @Index(
+                        name = "idx_followers_from_to",
+                        columnList = "from_user_fk,to_user_fk"
+                )
+        },
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_follow_relation",
+                        columnNames = {
+                                "from_user_fk",
+                                "to_user_fk"
+                        }
+                )
+        }
+)
 public class Followers {
 
     @Id

@@ -4,9 +4,9 @@ import com.connectify.demo.Security.Handler.JwtAccessDeniedHandler;
 import com.connectify.demo.Security.JwtAuthFilter;
 import com.connectify.demo.Security.JwtAuthenticationEntryPoint;
 import com.connectify.demo.Security.JwtUtil;
-import com.connectify.demo.Service.CustomUserDetailService;
+import com.connectify.demo.ServiceImpl.CustomUserDetailService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,13 +33,10 @@ import java.util.List;
 @EnableWebSecurity
 @Slf4j
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
-    @Autowired
-    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    @Autowired
-    private JwtAccessDeniedHandler jwtAccessDeniedHandler;
-    @Autowired
-    CORSProperties corsProperties;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
     @Bean
     public UserDetailsService userDetailsService() {
@@ -48,13 +45,12 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthFilter jwtAuthFilter) throws Exception {
-        http
+            http
                 .csrf(csrf -> csrf.disable())
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
                                 .requestMatchers("/auth/**").permitAll()
                                 .requestMatchers("/ws-chat/**").permitAll()
-//                        .requestMatchers("/ws-chat/**", "/topic/**", "/queue/**", "/app/**", "/user/**").permitAll()
                                 .requestMatchers("/stomp-test.html").permitAll()
                                 .requestMatchers(
                                         "/swagger-ui/**",
@@ -64,8 +60,6 @@ public class SecurityConfig {
                                         "/swagger-resources/**",
                                         "/swagger-ui/index.html"
                                 ).permitAll()
-//                        .requestMatchers(HttpMethod.GET, "/api/chat/history/*").permitAll()
-//                        .requestMatchers("/websocket/**", "/info", "/error").permitAll()
                                 .requestMatchers("/api/*/*").permitAll()
                                 .requestMatchers("/admin").hasRole("Admin")
                                 .anyRequest().authenticated()
@@ -103,19 +97,6 @@ public class SecurityConfig {
     public JwtAuthFilter jwtAuthFilter(CustomUserDetailService customUserDetailService, JwtUtil jwtUtil) {
         return new JwtAuthFilter(customUserDetailService, jwtUtil);
     }
-
-//    @Bean
-//    public CorsFilter corsFilter() {
-//        log.info("======>>>> SecurityConfig.corsFilter()");
-//        CorsConfiguration corsConfig = new CorsConfiguration();
-//        Arrays.stream(corsProperties.getAllowedOrigins()).forEach(corsConfig::addAllowedOrigin);
-//        Arrays.stream(corsProperties.getAllowedMethods()).forEach(corsConfig::addAllowedMethod);
-//        Arrays.stream(corsProperties.getAllowedHeaders()).forEach(corsConfig::addAllowedHeader);
-//        corsConfig.setAllowCredentials(true); // Allow cookies and credentials
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", corsConfig);
-//        return new CorsFilter(source);
-//    }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {

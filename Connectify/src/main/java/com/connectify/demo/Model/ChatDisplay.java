@@ -26,4 +26,10 @@ public class ChatDisplay {
         this.content = content;
         this.sender = sender;
     }
+
+    public ChatDisplay(String sender, String content, String roomId) {
+            this.content = content;
+            this.sender = sender;
+            this.roomId = roomId;
+    }
 }

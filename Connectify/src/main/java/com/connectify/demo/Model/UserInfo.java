@@ -13,7 +13,29 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "UserInfo")
+@Table(
+        name = "UserInfo",
+        indexes = {
+                @Index(
+                        name = "idx_user_username",
+                        columnList = "username"
+                ),
+                @Index(
+                        name = "idx_user_email",
+                        columnList = "email"
+                )
+        },
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_user_username",
+                        columnNames = "username"
+                ),
+                @UniqueConstraint(
+                        name = "uk_user_email",
+                        columnNames = "email"
+                )
+        }
+)
 
 public class UserInfo {
     @Id

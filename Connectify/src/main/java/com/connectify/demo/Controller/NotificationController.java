@@ -2,7 +2,8 @@ package com.connectify.demo.Controller;
 
 
 import com.connectify.demo.Model.Notification;
-import com.connectify.demo.Service.NotificationService;
+import com.connectify.demo.ServiceImpl.NotificationService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +16,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/notify")
+@RequiredArgsConstructor
 public class NotificationController {
 
-    @Autowired
-    private NotificationService notificationService;
+    private final NotificationService notificationService;
 
     @GetMapping("/all-notification/{id}")
     private ResponseEntity<?> getNotification(@PathVariable Long id){

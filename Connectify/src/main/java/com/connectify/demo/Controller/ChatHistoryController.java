@@ -5,7 +5,7 @@ import com.connectify.demo.Dto.ChatResponseDTO;
 import com.connectify.demo.Model.ChatDisplay;
 import com.connectify.demo.Model.ChatMessage;
 import com.connectify.demo.Repository.ChatMessageRepository;
-import com.connectify.demo.Service.ChatService;
+import com.connectify.demo.ServiceImpl.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -2,7 +2,7 @@ package com.connectify.demo.Controller;
 
 import Utility.ChatUtil;
 import com.connectify.demo.Dto.ChatMessageDTO;
-import com.connectify.demo.Service.ChatService;
+import com.connectify.demo.ServiceImpl.ChatService;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Controller;

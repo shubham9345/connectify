@@ -12,15 +12,31 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-@Table(name = "chat_messages")
+@Table(
+        name = "chat_messages",
+        indexes = {
+                @Index(
+                        name = "idx_chat_sender",
+                        columnList = "sender"
+                ),
+                @Index(
+                        name = "idx_chat_recipient",
+                        columnList = "recipient"
+                ),
+                @Index(
+                        name = "idx_chat_room",
+                        columnList = "roomId"
+                )
+        }
+)
 public class ChatMessage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String sender;    // username or userId string
-    private String recipient; // username or userId string
+    private String sender;
+    private String recipient;
     private String roomId;
     @Column(columnDefinition = "TEXT")
     private String content;
