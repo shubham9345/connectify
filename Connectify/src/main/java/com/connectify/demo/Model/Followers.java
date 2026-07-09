@@ -53,10 +53,6 @@ public class Followers {
     @JoinColumn(name = "to_user_fk")
     private UserInfo to;
 
-    public Followers() {
-    }
-
-    ;
 
     public Followers(UserInfo from, UserInfo to) {
         this.from = from;

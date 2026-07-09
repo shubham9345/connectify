@@ -1,7 +1,8 @@
 package com.connectify.demo.Controller;
 
 import com.connectify.demo.Model.UserInfo;
-import com.connectify.demo.ServiceImpl.FollowersService;
+import com.connectify.demo.ServiceImpl.FollowersServiceImpl;
+import com.connectify.demo.service.FollowersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
